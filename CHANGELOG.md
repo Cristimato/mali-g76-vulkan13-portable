@@ -1,5 +1,15 @@
 # Changelog
 
+## v5.7 — 2026-11-27
+- vkshim v5.7 (o mesmo do módulo rosemary-vulkan13 v5.7), build `portable`.
+- Por jogo em `Android/data/<pacote>/vkshim.conf` (desligado por padrão):
+  `fps=N` (limitador com intervalo constante), `aniso=N`, `mip=near`, `lodbias=f`, `fp16=1`.
+- Benchmark `tools/probe/p57` (1280x720, PSNR com `p57 cmp`): vkshim sem custo sobre o r49 puro;
+  textura com aniso 16x: `aniso=4` 8,4x mais rápido, `mip=near` 2,1x (37 dB); `fp16` +5% no máximo.
+- Em jogo limitado pela CPU (BT3 em 1x) os ajustes de textura não mudam o FPS; o HUD mostra qual é
+  o caso (`espera_ms` e `gpu_uso_pct`; no portátil o uso da GPU fica -1 sem root).
+- c92 22 OK / 1 limite e e47 23/23 com este zip.
+
 ## v5.0 — 2026-11-27
 - vkshim v5.0 (o mesmo do módulo rosemary-vulkan13 v5.0), build `portable`. Detalhes completos no
   CHANGELOG do módulo; resumo:
