@@ -1,5 +1,20 @@
 # Changelog
 
+## v5.0 — 2026-11-27
+- vkshim v5.0 (o mesmo do módulo rosemary-vulkan13 v5.0), build `portable`. Detalhes completos no
+  CHANGELOG do módulo; resumo:
+- `VK_EXT_robustness2` (nullDescriptor por recursos fantasma; o r49 trava com qualquer descritor nulo),
+  `VK_KHR_push_descriptor`, `VK_EXT_multi_draw`, `VK_EXT_memory_budget`/`_priority`, divisor EXT.
+- Descriptor indexing completo: índice não uniforme de imagens/texel por laço waterfall no shader,
+  partially bound preenchido com fantasmas, update-after-bind (real para imagens/texel; buffers
+  usam o descritor do momento do bind), limites de 1.000.000 descritores.
+- `drawIndirectCount` (endereço do contador por push constant; o VS descarta os draws extras),
+  `VK_EXT_depth_clip_enable` e `VK_EXT_depth_clip_control`.
+- depthClamp exato por pixel (`gl_FragDepth`): corrige o chão transparente do BT3 (Dragon Rage).
+- HUD (`hud=1`) e config por jogo em `Android/data/<pacote>/vkshim.conf` (no portátil a frequência
+  e o uso da GPU ficam -1: ler o `ged` precisa da regra de SELinux do módulo com root).
+- Probes `c92` (22 OK / 0 BUG / 1 limite com este zip; r49 puro 7 OK) e `e47` (23/23).
+
 ## v4.7 — 2026-11-27
 - vkshim v4.7 (o mesmo do módulo rosemary-vulkan13 v4.7), build `portable`.
 - Novo `shim/spvemu.c`: `gl_ClipDistance` vira recorte real (varying + discard no FS);

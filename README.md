@@ -1,30 +1,35 @@
-# Mali-G76 Vulkan 1.3 — driver portátil (r49p1 + vkshim v4.7)
+# Mali-G76 Vulkan 1.3 — driver portátil (r49p1 + vkshim v5.0)
 
 Driver Vulkan **importável** para a **Mali-G76** (Bifrost, MT6785 / Helio G90T, testado no
 POCO/Redmi rosemary). Funciona em launchers e emuladores que aceitam **"Import driver ZIP"**
 (estilo adrenotools, com `meta.json` na raiz). **Não precisa de root nem de módulo.**
 
-> **v4.7 (2026-11-27):** mesmo vkshim v4.7 do módulo
-> [rosemary-vulkan13](https://github.com/Cristimato/rosemary-vulkan13): recorte (`gl_ClipDistance`)
-> de verdade, depthClamp, `gl_DrawID` e wireframe emulados, e correções de erratas do driver
-> (MK-16/07/11/06). Probe `e47`: 19/19 no aparelho (v4.0: 9/19). A v4.0 e a v3.0 continuam nas Releases.
+> **v5.0 (2026-11-27):** mesmo vkshim v5.0 do módulo
+> [rosemary-vulkan13](https://github.com/Cristimato/rosemary-vulkan13): `VK_EXT_robustness2`
+> (exigida pelo DXVK), push descriptors, **descriptor indexing completo**, `draw_indirect_count`,
+> depthClamp exato, `depth_clip_enable`/`_control`, multi draw, orçamento de memória, HUD e config
+> por jogo. Probe `c92`: 22 OK / 1 limite (r49 puro: 7 OK). As versões anteriores continuam nas Releases.
 
-| | driver do sistema (r32p1) | v3.0 | v4.0 | **v4.7** |
-|---|---|---|---|---|
-| Vulkan | 1.1.177 | 1.3.278 | 1.3.278 | **1.3.278** |
-| dynamicRendering / sync2 / maintenance4 | — | sim | sim | sim |
-| shaders bindless (RuntimeDescriptorArray) | falha | convertidos | convertidos | convertidos |
-| shader com `gl_ClipDistance` | — | derruba o driver | compila (recorte ignorado) | ✅ recorte real |
-| erratas do compilador Mali (Arm 3843237 e outros) | — | — | ✅ corrigidas no shader | ✅ + erratas do driver MK-16/07/11/06 |
-| depthClamp / fillModeNonSolid / multiDrawIndirect | não | não | anunciados (ignorados) | ✅ emulados de verdade |
-| texturas BC1–BC7 | não | não | ✅ na GPU, sem perda (PixelBC) | ✅ |
-| cache de pipelines entre sessões | — | — | ✅ | ✅ |
+| | driver do sistema (r32p1) | v3.0 | v4.0 | v4.7 | **v5.0** |
+|---|---|---|---|---|---|
+| Vulkan | 1.1.177 | 1.3.278 | 1.3.278 | 1.3.278 | **1.3.278** |
+| dynamicRendering / sync2 / maintenance4 | — | sim | sim | sim | sim |
+| shaders bindless (RuntimeDescriptorArray) | falha | convertidos | convertidos | convertidos | convertidos |
+| shader com `gl_ClipDistance` | — | derruba o driver | compila (recorte ignorado) | ✅ recorte real | ✅ recorte real |
+| erratas do compilador Mali (Arm 3843237 e outros) | — | — | ✅ corrigidas no shader | ✅ + erratas do driver MK-16/07/11/06 | ✅ + erratas do driver MK-16/07/11/06 |
+| depthClamp / fillModeNonSolid / multiDrawIndirect | não | não | anunciados (ignorados) | ✅ emulados de verdade | ✅ emulados de verdade (depthClamp exato por pixel) |
+| texturas BC1–BC7 | não | não | ✅ na GPU, sem perda (PixelBC) | ✅ | ✅ |
+| cache de pipelines entre sessões | — | — | ✅ | ✅ | ✅ |
+| robustness2 / push descriptor / multi_draw | — | — | — | — | ✅ |
+| descriptor indexing (não uniforme, partially bound, UAB) | — | — | — | — | ✅ (UAB de buffer: valor do bind) |
+| draw_indirect_count / depth_clip_enable / depth_clip_control | — | — | — | — | ✅ |
+| HUD e config por jogo (`Android/data/<pacote>/vkshim.conf`) | — | — | — | — | ✅ |
 
 ## Instalação
 
-1. Baixe `vk49_g76-v4.7-portatil.zip` na [Release mais recente](../../releases/latest).
+1. Baixe `vk49_g76-v5.0-portatil.zip` na [Release mais recente](../../releases/latest).
 2. No launcher: *Driver / GPU driver → Import driver ZIP* → escolha o zip.
-3. Selecione **"Mali-G76 r49p1 Vulkan 1.3 (vkshim v4.7)"** e abra o jogo.
+3. Selecione **"Mali-G76 r49p1 Vulkan 1.3 (vkshim v5.0)"** e abra o jogo.
 
 > O `meta.json` usa `backend: panvk` e `panvkFrontend: bifrost-jm` **só** para passar no filtro
 > de família desses launchers (eles reconhecem Turnip/PanVK/RADV/PowerVR pelo texto). O driver
@@ -45,7 +50,7 @@ POCO/Redmi rosemary). Funciona em launchers e emuladores que aceitam **"Import d
 | arquivo | o que é |
 |---|---|
 | `meta.json` | descrição do pacote para o launcher |
-| `vulkan.mali_r49.so` | **vkshim v4.7** (entrada do driver): corrige SPIR-V, emula recursos, cache de pipelines |
+| `vulkan.mali_r49.so` | **vkshim v5.0** (entrada do driver): corrige SPIR-V, emula recursos, cache de pipelines |
 | `vulkan.pixelbc.so` | **PixelBC**: texturas BC1–BC5/BC7 decodificadas na GPU, sem perda |
 | `vulkan.r49.so` | HAL Vulkan r49p1 |
 | `libGLES_ma49.so` | blob Mali r49p1 (GPU-ID patchado, SONAME renomeado) |
@@ -78,14 +83,14 @@ conferido pelo script). As dependências (SPIRV-Tools do fork e PixelBC) são ba
 fixos por `tools/build_deps.sh`.
 
 ```sh
-tools/make_portable.sh Mali-r49p1-MT6768-v0.1.0.zip   # -> out/vk49_g76-v4.7-portatil.zip
+tools/make_portable.sh Mali-r49p1-MT6768-v0.1.0.zip   # -> out/vk49_g76-v5.0-portatil.zip
 tests/run.sh                                          # testes offline dos passes SPIR-V
 ```
 
 Testar o driver sem launcher (root):
 ```sh
 clang -O1 -o v4test tools/probe/v4test.c -ldl
-mkdir x && unzip out/vk49_g76-v4.7-portatil.zip -d x
+mkdir x && unzip out/vk49_g76-v5.0-portatil.zip -d x
 # shaders de teste: compile tests/*.vert|frag|comp com glslangValidator -V (veja tests/run.sh)
 su -c "LD_LIBRARY_PATH=$PWD/x:/vendor/lib64:/vendor/lib64/mt6785 ./v4test $PWD/x/vulkan.mali_r49.so <pasta_dos_spv>"
 # esperado: RESULTADO: TUDO OK

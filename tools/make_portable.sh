@@ -8,7 +8,7 @@ set -e
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 DONOR=${1:?uso: $0 <Mali-r49p1-MT6768-v0.1.0.zip>}
 DONOR_SHA=0b5d439f756dcc4236063a3186d2f158ad7ff8333b9d3ceee4cc3b3154fd1c6a
-VER=4.7
+VER=5.0
 
 echo "$DONOR_SHA  $DONOR" | sha256sum -c - >/dev/null || { echo "sha256 do zip donor nao confere"; exit 2; }
 
@@ -26,7 +26,7 @@ python3 -I "$ROOT/tools/patch_blob.py" "$WORK/donor" "$WORK/lib"
 # 2) tudo numa pasta so (o launcher usa a pasta do pacote como search path)
 find "$WORK/lib" -type f -name '*.so' -exec cp {} "$WORK/pkg/" \;
 
-# 3) vkshim v4.7 portatil (procura vulkan.pixelbc.so / vulkan.r49.so na pasta do pacote)
+# 3) vkshim v5.0 portatil (procura vulkan.pixelbc.so / vulkan.r49.so na pasta do pacote)
 #    + PixelBC (texturas BC na GPU, sem perda; acha vulkan.r49.so ao lado dele)
 sh "$ROOT/shim/build.sh" "$WORK/pkg/vulkan.mali_r49.so" portable
 cp "$ROOT/deps/vulkan.pixelbc.portable.so" "$WORK/pkg/vulkan.pixelbc.so"
@@ -37,8 +37,8 @@ cp "$ROOT/deps/vulkan.pixelbc.portable.so" "$WORK/pkg/vulkan.pixelbc.so"
 cat > "$WORK/pkg/meta.json" <<EOF
 {
   "schemaVersion": 1,
-  "name": "Mali-G76 r49p1 Vulkan 1.3 (vkshim v4.7)",
-  "description": "Blob ARM r49p1 + vkshim v4.7 (erratas Mali, clip real, depthClamp, gl_DrawID e wireframe emulados, BC1-BC7 via PixelBC, cache de pipelines). Portatil, sem root. Mali-G76/Bifrost. Tag panvk so para o filtro do launcher.",
+  "name": "Mali-G76 r49p1 Vulkan 1.3 (vkshim v5.0)",
+  "description": "Blob ARM r49p1 + vkshim v5.0: robustness2, push descriptors, descriptor indexing completo, draw_indirect_count, depthClamp exato, depth_clip_enable/control, multi draw, clip/wireframe/gl_DrawID emulados, erratas Mali, BC1-BC7 via PixelBC, cache de pipelines, HUD/config por jogo. Portatil, sem root. Mali-G76/Bifrost. Tag panvk so para o filtro do launcher.",
   "author": "Cristimato",
   "packageVersion": "$VER",
   "vendor": "ARM",
