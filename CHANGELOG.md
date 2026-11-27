@@ -1,5 +1,17 @@
 # Changelog
 
+## v4.7 — 2026-11-27
+- vkshim v4.7 (o mesmo do módulo rosemary-vulkan13 v4.7), build `portable`.
+- Novo `shim/spvemu.c`: `gl_ClipDistance` vira recorte real (varying + discard no FS);
+  `maxClipDistances`/`maxCullDistances` = 8.
+- depthClamp emulado (z preso a [0, w] por vértice; exato quando a primitiva não cruza near/far).
+- multiDrawIndirect com `gl_DrawID` correto (push constant extra no layout).
+- fillModeNonSolid (LINE/POINT) por geometry shader gerado.
+- Erratas do driver r49p1: MK-16 (cull dinâmico sumia com pontos/linhas, confirmada), MK-07/11/06.
+- Probe `tools/probe/e47` (19 casos): v4.0 9/19, **v4.7 19/19** com este zip no aparelho.
+- Conhecido: no BT3 (Dragon Rage), uma área do chão perto da câmera fica transparente; suspeita no
+  depthClamp por vértice em primitivas que cruzam o near. Contorno: `setprop debug.vkshim.clamp 0`.
+
 ## v4.0 — 2026-11-26
 - vkshim v4 (o mesmo do módulo rosemary-vulkan13 v4.0), build `portable`.
 - Corrigido: shader com `gl_ClipDistance`/`gl_CullDistance` derrubava o driver; agora esses
